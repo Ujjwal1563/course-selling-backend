@@ -2,6 +2,8 @@ const express = require("express");
 const { userModel } = require("../db");
 const { z } = require("zod");
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken');
+const { JWT_USER_PASSWORD } = require("../config");
 const router = express.Router();
 
 router.post("/signup", async function (req, res) {
@@ -44,7 +46,31 @@ router.post("/signup", async function (req, res) {
       .json({ message: "Internal Server Error", error: error.message });
   }
 });
-router.post("/signin", function (req, res) {});
+router.post("/signin",async function (req, res) {
+    const email = req.body.email;
+    const password = req.body.password;
+    const user =await userModel.findOne({email:email});
+    if(!user){
+        return res.status(401).json({
+            status:401,
+            message:"Invalid Email or Password"
+        })
+    }
+    const matchPassword = bcrypt.compare(password,user.password);
+    if (matchPassword){
+        const token = jwt.sign({
+            id:user._id
+        },JWT_USER_PASSWORD);
+        res.json({
+            token:token
+        })
+    }
+    else {
+        return res.status(401).json({
+            message:"Incorrect Password"
+        })
+    }
+});
 router.get("/purchase", function (req, res) {});
 router.get("/courses", function (req, res) {});
 
