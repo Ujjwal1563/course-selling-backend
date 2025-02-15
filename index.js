@@ -1,12 +1,16 @@
-const express = require('express');
-const jwt = require('jsonwebtoken')
-const apiRoutes = require('./routes')
+const express = require("express");
+const mongoose = require("mongoose");
+const apiRoutes = require("./routes");
 const app = express();
-const { PORT}=require('./config');
-app.use('/api',apiRoutes);
+const { PORT, MONGO_URL } = require("./config");
+app.use(express.json());
+app.use("/api", apiRoutes);
 
-app.get()
+async function main() {
+  await mongoose.connect(MONGO_URL);
+  app.listen(PORT, function () {
+    console.log(`Server Started on PORT ${PORT}`);
+  });
+}
 
-app.listen(PORT, function() {
-    console.log(`Server Started on PORT ${PORT}`)
-})
+main();
