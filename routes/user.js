@@ -1,5 +1,5 @@
 const express = require("express");
-const { userModel } = require("../db");
+const { userModel, courseModel } = require("../db");
 const { z } = require("zod");
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken');
@@ -71,7 +71,11 @@ router.post("/signin",async function (req, res) {
         })
     }
 });
-router.get("/purchase", function (req, res) {});
-router.get("/courses", function (req, res) {});
+router.get("/purchases",async function (req, res) {
+    const userId= req.body.userId;
+    const response = await courseModel.find({
+        userId:userId
+    })
+});
 
 module.exports = router;
