@@ -76,6 +76,10 @@ router.get("/purchases",async function (req, res) {
     const response = await courseModel.find({
         userId:userId
     })
+    res.json({
+      message:"All courses",
+      courses:response
+    })
 });
 
 module.exports = router;
